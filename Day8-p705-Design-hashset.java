@@ -1,53 +1,21 @@
+import java.util.BitSet;
+
 class MyHashSet {
-    private Bucket[] buckets;
-    private int keyRange;
+    private BitSet set;
 
     public MyHashSet() {
-        keyRange = 769; // prime number for better distribution
-        buckets = new Bucket[keyRange];
-        for (int i = 0; i < keyRange; i++) {
-            buckets[i] = new Bucket();
-        }
-    }
-
-    private int hash(int key) {
-        return key % keyRange;
+        set = new BitSet(1000001); // supports keys up to 1e6
     }
 
     public void add(int key) {
-        int index = hash(key);
-        buckets[index].insert(key);
+        set.set(key);
     }
 
     public void remove(int key) {
-        int index = hash(key);
-        buckets[index].delete(key);
+        set.clear(key);
     }
 
     public boolean contains(int key) {
-        int index = hash(key);
-        return buckets[index].exists(key);
-    }
-}
-
-class Bucket {
-    private LinkedList<Integer> list;
-
-    public Bucket() {
-        list = new LinkedList<>();
-    }
-
-    public void insert(int key) {
-        if (!list.contains(key)) {
-            list.addFirst(key);
-        }
-    }
-
-    public void delete(int key) {
-        list.remove((Integer) key);
-    }
-
-    public boolean exists(int key) {
-        return list.contains(key);
+        return set.get(key);
     }
 }
