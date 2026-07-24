@@ -1,32 +1,53 @@
 class MyHashSet {
-    private boolean[]set;
-
+    private Bucket[] buckets;
+    private int keyRange;
 
     public MyHashSet() {
-        set = new boolean[10000001];
-        
+        keyRange = 769; // prime number for better distribution
+        buckets = new Bucket[keyRange];
+        for (int i = 0; i < keyRange; i++) {
+            buckets[i] = new Bucket();
+        }
     }
-    
+
+    private int hash(int key) {
+        return key % keyRange;
+    }
+
     public void add(int key) {
-        set[key] = true;
-        
+        int index = hash(key);
+        buckets[index].insert(key);
     }
-    
+
     public void remove(int key) {
-        set[key] = false;
-        
+        int index = hash(key);
+        buckets[index].delete(key);
     }
-    
+
     public boolean contains(int key) {
-        return set[key];
-        
+        int index = hash(key);
+        return buckets[index].exists(key);
     }
 }
 
-/**
- * Your MyHashSet object will be instantiated and called as such:
- * MyHashSet obj = new MyHashSet();
- * obj.add(key);
- * obj.remove(key);
- * boolean param_3 = obj.contains(key);
- */
+class Bucket {
+    private LinkedList<Integer> list;
+
+    public Bucket() {
+        list = new LinkedList<>();
+    }
+
+    public void insert(int key) {
+        if (!list.contains(key)) {
+            list.addFirst(key);
+        }
+    }
+
+    public void delete(int key) {
+        list.remove((Integer) key);
+    }
+
+    public boolean exists(int key) {
+        return list.contains(key);
+    }
+}
