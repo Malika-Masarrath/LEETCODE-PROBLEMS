@@ -1,29 +1,47 @@
-import java.util.*;
 
+
+import java.util.*;
 class UndergroundSystem {
-    private Map<Integer, String> inStation = new HashMap<>();
-    private Map<Integer, Integer> inTime = new HashMap<>();
-    private Map<String, double[]> stats = new HashMap<>();
-    
+  class CheckIn {
+        String station;
+        int time;
+ CheckIn(String station, int time) {
+            this.station = station;
+            this.time = time;
+        }
+	}
+ class Route {
+        int totalTime;
+        int tripCount;
+  Route() {
+            totalTime = 0;
+            tripCount = 0;
+        }
+	}
+ HashMap<Integer, CheckIn> checkInMap;
+    HashMap<String, Route> routeMap;
+ 
+    public UndergroundSystem() {
+        checkInMap = new HashMap<>();
+        routeMap = new HashMap<>();
+	}
+ 
     public void checkIn(int id, String stationName, int t) {
-        inStation.put(id, stationName);
-        inTime.put(id, t);
-    }
-    
+        checkInMap.put(id, new CheckIn(stationName, t));
+	}
+ 
     public void checkOut(int id, String stationName, int t) {
-        String route = inStation.get(id) + "-" + stationName;
-        int travel = t - inTime.get(id);
-        
-        stats.putIfAbsent(route, new double[2]); 
-        stats.get(route)[0] += travel;
-        stats.get(route)[1] += 1;
-        
-        inStation.remove(id);
-        inTime.remove(id);
-    }
-    
-    public double getAverageTime(String startStation, String endStation) {
-        double[] data = stats.get(startStation + "-" + endStation);
-        return data[0] / data[1];
-    }
+    CheckIn passenger = checkInMap.get(id);
+    String route = passenger.station + "->" + stationName;
+    Route data = routeMap.getOrDefault(route, new Route());
+        data.totalTime += (t - passenger.time);
+        data.tripCount++;
+     routeMap.put(route, data);
+ checkInMap.remove(id);
+	}
+  public double getAverageTime(String startStation, String endStation) {
+ String route = startStation + "->" + endStation;
+  Route data = routeMap.get(route);
+  return (double) data.totalTime / data.tripCount;
+	}
 }
