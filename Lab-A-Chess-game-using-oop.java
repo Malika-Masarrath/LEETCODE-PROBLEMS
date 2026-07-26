@@ -1,5 +1,3 @@
-Program 
-
 import java.util.Scanner;
 
 // ===================== PIECE (Abstraction + Encapsulation) =====================
