@@ -1,6 +1,3 @@
-
-Program :
- 
 import java.util.*;
 
 // ---------- Student Model ----------
