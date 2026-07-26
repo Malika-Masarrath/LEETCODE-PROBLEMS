@@ -1,28 +1,34 @@
+
+
 class Foo {
-    private int step = 1;
-
-    public Foo() {}
-
-    public synchronized void first(Runnable printFirst) throws InterruptedException {
-        printFirst.run();
-        step = 2;
-        notifyAll();
-    }
-
-    public synchronized void second(Runnable printSecond) throws InterruptedException {
-        while (step < 2) {
-            wait();
+    private final Object lock = new Object();
+    private int state = 1;
+ public Foo() {
+ }
+ public void first(Runnable printFirst) throws InterruptedException {
+        synchronized (lock) {
+         printFirst.run();
+          state = 2;
+          lock.notifyAll();
         }
-        printSecond.run();
-        step = 3;
-        notifyAll();
-    }
-
-    public synchronized void third(Runnable printThird) throws InterruptedException {
-        while (step < 3) {
-            wait();
+	}
+ public void second(Runnable printSecond) throws InterruptedException {
+        synchronized (lock) {
+            while (state != 2) {
+            	lock.wait();
+            }
+            printSecond.run();
+            state = 3;
+            lock.notifyAll();
         }
-        printThird.run();
-    }
+	}
+ public void third(Runnable printThird) throws InterruptedException {
+        synchronized (lock) {
+            while (state != 3) {
+                lock.wait();
+            }
+            printThird.run();
+        }
+	}
 }
 
