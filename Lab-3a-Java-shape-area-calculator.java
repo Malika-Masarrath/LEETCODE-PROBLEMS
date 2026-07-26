@@ -1,5 +1,3 @@
-Program :
-
 public class ShapeAreaCalculator {
 public static void main(String[] args) {
 System.out.println("----- Shape Area Calculator -----\n");
